@@ -1,0 +1,66 @@
+/* ===== GLOBAL ===== */
+body {
+    background: linear-gradient(to right, #eef2f7, #f8f9fc);
+    font-family: "Segoe UI", sans-serif;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    background: #ffffff !important;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+}
+
+/* ===== CONTAINER ===== */
+.dashboard-container {
+    padding: 30px;
+}
+
+/* ===== MAIN CARD ===== */
+.dashboard-card {
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 25px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.08);
+}
+
+/* ===== GRID ===== */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+/* ===== STAT CARD ===== */
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    transition: 0.3s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+}
+
+/* ===== BUTTON ===== */
+.btn-railway {
+    background: #e2172e;
+    color: white;
+    border-radius: 8px;
+    padding: 10px 18px;
+    border: none;
+}
+
+.btn-railway:hover {
+    background: #e51010;
+    color: white;
+}
+
+body {
+    background: 
+        linear-gradient(rgba(255,255,255,0.85), rgba(255,255,255,0.85)),
+        url("../images/railway_bg.jpg") no-repeat center center fixed;
+    background-size: cover;
+}

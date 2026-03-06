@@ -27,6 +27,8 @@ migrate = Migrate(app, db)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
+login_manager.login_view = 'login'
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -118,41 +120,85 @@ def calculate_urgency(complaint):
 
 # -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-@app.route('/')
-def home():
-    return redirect(url_for('login'))
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+
+        # 🔐 Safely get form data
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        # ✅ Basic validation
+        if not username or not password:
+            flash("Please enter username and password.", "danger")
+            return redirect(url_for('login'))
+
+        # 🔍 Find user
         user = User.query.filter_by(username=username).first()
+
+        # 🔐 Password verification
         if user and check_password_hash(user.password, password):
+
             login_user(user)
-            # Redirect based on role and department
+
+            flash("Login Successful!", "success")
+
+            # 🎯 Role based redirection
             if user.role.lower() == 'admin':
                 return redirect(url_for('admin_dashboard', department=user.department))
+
             elif user.role.lower() == 'employee':
-                return redirect(url_for('employee_dashboard'))  # Adjust accordingly
-            return redirect(url_for('user_dashboard'))  # Assuming there's a user role
+                return redirect(url_for('employee_dashboard'))
+
+            else:
+                return redirect(url_for('user_dashboard'))
+
         else:
-            flash('Invalid credentials', 'danger')
+            flash("Invalid Username or Password", "danger")
+            return redirect(url_for('login'))
+
     return render_template('login.html')
+
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username']
-        password = generate_password_hash(request.form['password'])  # Hash password
-        role = request.form['role']
-        department = request.form['department'] if role in ['Admin', 'Employee'] else None         
-        new_user = User(username=username, password=password, role=role, department=department)
+        username = request.form.get('username')
+        password_raw = request.form.get('password')
+        role = request.form.get('role')
+        department = request.form.get('department') if role in ['Admin', 'Employee'] else None
+
+        # 🔐 Validation
+        if not username or not password_raw or not role:
+            flash('All required fields must be filled.', 'danger')
+            return redirect(url_for('register'))
+
+        # ❌ Duplicate user check
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            flash('Username already exists. Choose another.', 'danger')
+            return redirect(url_for('register'))
+
+        # 🔐 Hash password
+        password = generate_password_hash(password_raw)
+
+        # ✅ Create user
+        new_user = User(
+            username=username,
+            password=password,
+            role=role,
+            department=department
+        )
+
         db.session.add(new_user)
         db.session.commit()
-        flash('Registration successful! You can log in now.', 'success')
+
+        flash('Registration successful! Please login.', 'success')
         return redirect(url_for('login'))
+
     return render_template('register.html')
+
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @app.route('/user_dashboard')
@@ -370,42 +416,74 @@ def mark_as_solved(complaint_id):
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-@app.route('/chatbot')
-@login_required
+# @app.route('/chatbot')
+# @login_required
+# def chatbot():
+#     return render_template('chatbot.html')
+
+# @app.route('/chatbot_message', methods=['POST'])
+# @login_required
+# def chatbot_message():
+#     user_message = request.form['message']
+    
+#     bot_response = "Sorry, I didn't understand that."
+    
+#     if "track" in user_message.lower():
+#         bot_response = "You can track your complaints on the [Track Complaints page]({}).".format(url_for('track_complaints'))
+#     elif "complaint" in user_message.lower():
+#         bot_response = "You can submit a complaint by visiting the [Complaint page]({}).".format(url_for('complaint'))
+#     elif "help" in user_message.lower():
+#         bot_response = "How can I assist you today? Feel free to ask any questions!"
+#     elif "feedback" in user_message.lower():
+#         bot_response = "You can submit feedback once your complaint is resolved on the [Feedback page]({}).".format(url_for('submit_feedback', complaint_id=123))  # Replace '123' with dynamic complaint ID if needed
+#     return bot_response
+
+# @socketio.on('message')
+# def handle_message(msg):
+#     print('Message from user: ' + msg)
+#     response = "I am a simple bot. You said: " + msg  # Simple response
+#     send(response, broadcast=True)
+
+
+# @app.route('/send_message', methods=['POST'])
+# def send_message():
+#     user_message = request.form['message']
+    
+#     bot_response = chatbot_message()  # Get the bot's response
+    
+#     return render_template('chat.html', user_message=user_message, bot_response=bot_response)
+
+from flask import Flask, render_template, request, jsonify
+from chatbot_engine import SmartChatbot
+from flask_socketio import SocketIO
+
+socketio = SocketIO(app)
+
+bot = SmartChatbot()
+
+conversation_memory = {}
+
+@app.route("/chatbot")
 def chatbot():
-    return render_template('chatbot.html')
+    return render_template("chatbot.html")
 
-@app.route('/chatbot_message', methods=['POST'])
-@login_required
+
+@app.route("/chatbot_message",methods=["POST"])
 def chatbot_message():
-    user_message = request.form['message']
-    
-    bot_response = "Sorry, I didn't understand that."
-    
-    if "track" in user_message.lower():
-        bot_response = "You can track your complaints on the [Track Complaints page]({}).".format(url_for('track_complaints'))
-    elif "complaint" in user_message.lower():
-        bot_response = "You can submit a complaint by visiting the [Complaint page]({}).".format(url_for('complaint'))
-    elif "help" in user_message.lower():
-        bot_response = "How can I assist you today? Feel free to ask any questions!"
-    elif "feedback" in user_message.lower():
-        bot_response = "You can submit feedback once your complaint is resolved on the [Feedback page]({}).".format(url_for('submit_feedback', complaint_id=123))  # Replace '123' with dynamic complaint ID if needed
-    return bot_response
 
-@socketio.on('message')
+    message = request.json["message"]
+
+    response = bot.generate_response(message)
+
+    return jsonify({"response":response})
+
+
+@socketio.on("message")
 def handle_message(msg):
-    print('Message from user: ' + msg)
-    response = "I am a simple bot. You said: " + msg  # Simple response
-    send(response, broadcast=True)
 
+    response = bot.generate_response(msg)
 
-@app.route('/send_message', methods=['POST'])
-def send_message():
-    user_message = request.form['message']
-    
-    bot_response = chatbot_message()  # Get the bot's response
-    
-    return render_template('chat.html', user_message=user_message, bot_response=bot_response)
+    socketio.send(response)
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -459,6 +537,18 @@ def employee_performance(department):
     return render_template('employee_performance.html', employee_performance=employee_performance)
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+@app.route('/')
+@login_required
+def home():
+    if current_user.role.lower() == 'admin':
+        return redirect(url_for('admin_dashboard', department=current_user.department))
+
+    elif current_user.role.lower() == 'employee':
+        return redirect(url_for('employee_dashboard'))
+
+    else:
+        return redirect(url_for('user_dashboard'))
 
 @app.route('/logout')
 @login_required

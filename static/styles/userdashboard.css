@@ -21,7 +21,7 @@ body {
 
 /* navbar main */
 nav {
-  background-color: #fff;
+  background-color: #b77313;
   align-content: space-between;
   position: fixed;
   z-index: 1000;
@@ -47,7 +47,7 @@ nav {
 
 .language-selector {
   border-radius: 0.3rem;
-  background-color: #f1eded;
+  background-color: #919982b8;
   display: flex;
   gap: 0.5rem;
   font-size: 0.8rem;

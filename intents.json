@@ -1,0 +1,205 @@
+{
+ "intents":[
+
+  {
+   "tag":"greeting",
+   "patterns":[
+    "hi",
+    "hello",
+    "hey",
+    "good morning",
+    "good afternoon",
+    "good evening",
+    "hi there",
+    "hello bot",
+    "hey assistant",
+    "hello there",
+    "is anyone there"
+   ],
+   "responses":[
+    "Hello! How can I assist you today?",
+    "Hi there! How can I help with your complaint or request?",
+    "Welcome! How may I help you today?"
+   ]
+  },
+
+  {
+   "tag":"goodbye",
+   "patterns":[
+    "bye",
+    "goodbye",
+    "see you",
+    "talk later",
+    "exit",
+    "quit",
+    "thanks bye"
+   ],
+   "responses":[
+    "Goodbye! Have a great day.",
+    "See you later! Feel free to return if you need help.",
+    "Take care! I'm always here to help."
+   ]
+  },
+
+  {
+   "tag":"thanks",
+   "patterns":[
+    "thanks",
+    "thank you",
+    "thanks a lot",
+    "appreciate it",
+    "thank you so much"
+   ],
+   "responses":[
+    "You're welcome!",
+    "Happy to help!",
+    "Glad I could assist you."
+   ]
+  },
+
+  {
+   "tag":"help",
+   "patterns":[
+    "help",
+    "i need help",
+    "can you help me",
+    "assist me",
+    "support please",
+    "what can you do",
+    "how can you help"
+   ],
+   "responses":[
+    "I can help you with:\n• Filing a complaint\n• Tracking complaint status\n• Providing feedback\n• General support",
+    "You can ask me to track complaints, register complaints, or give feedback."
+   ]
+  },
+
+  {
+   "tag":"complaint",
+   "patterns":[
+    "file complaint",
+    "submit complaint",
+    "register complaint",
+    "i want to complain",
+    "i want to file a complaint",
+    "report an issue",
+    "report problem",
+    "raise complaint",
+    "create complaint",
+    "lodge complaint",
+    "submit issue",
+    "register issue",
+    "open ticket",
+    "create ticket",
+    "report ticket"
+   ],
+   "responses":[
+    "You can submit a complaint through the Complaint page.",
+    "Please visit the complaint form to register your issue.",
+    "To file a complaint, go to the Complaint section and fill out the form."
+   ]
+  },
+
+  {
+   "tag":"track",
+   "patterns":[
+    "track complaint",
+    "check complaint status",
+    "complaint status",
+    "track my complaint",
+    "check my complaint",
+    "complaint progress",
+    "track issue",
+    "check issue status",
+    "track ticket",
+    "ticket status",
+    "check ticket",
+    "where is my complaint",
+    "what is the status of my complaint",
+    "check complaint update"
+   ],
+   "responses":[
+    "Please provide your complaint ID to track the status.",
+    "Sure, share your complaint ID and I will check the status.",
+    "Enter your complaint number and I will help track it."
+   ]
+  },
+
+  {
+   "tag":"feedback",
+   "patterns":[
+    "give feedback",
+    "submit feedback",
+    "provide feedback",
+    "submit review",
+    "write review",
+    "leave feedback",
+    "i want to give feedback",
+    "how to give feedback"
+   ],
+   "responses":[
+    "Feedback can be submitted after your complaint is resolved.",
+    "You can provide feedback through the feedback page once the issue is resolved."
+   ]
+  },
+
+  {
+   "tag":"complaint_time",
+   "patterns":[
+    "how long does complaint resolution take",
+    "when will my complaint be resolved",
+    "complaint resolution time",
+    "how much time for complaint resolution",
+    "how many days to solve complaint"
+   ],
+   "responses":[
+    "Most complaints are resolved within 24-48 hours depending on the issue.",
+    "Resolution time depends on the complaint category but usually takes 1-2 days."
+   ]
+  },
+
+  {
+   "tag":"complaint_types",
+   "patterns":[
+    "what types of complaints can i submit",
+    "complaint categories",
+    "types of complaints",
+    "what complaints can be filed",
+    "which issues can be reported"
+   ],
+   "responses":[
+    "You can file complaints related to service issues, technical problems, billing concerns, or general feedback.",
+    "Common complaints include service problems, technical errors, and billing disputes."
+   ]
+  },
+
+  {
+   "tag":"contact_support",
+   "patterns":[
+    "contact support",
+    "talk to support",
+    "connect me to support",
+    "customer support",
+    "i want to talk to human",
+    "speak with agent"
+   ],
+   "responses":[
+    "If you need further assistance, please contact customer support through the Help page.",
+    "You can reach our support team through the contact support section."
+   ]
+  },
+
+  {
+   "tag":"unknown",
+   "patterns":[
+    "random text",
+    "something else"
+   ],
+   "responses":[
+    "I'm sorry, I didn't understand that. Could you please rephrase?",
+    "I may not have the answer to that. Try asking about complaints or support."
+   ]
+  }
+
+ ]
+}
